@@ -8,3 +8,27 @@
     height: 25px;
     width: 25px;
 }
+
+.blank {
+    background-color: white;
+}
+
+.wall {
+    background-color: black;
+}
+
+.start {
+    background-color: rgb(11, 218, 11);
+}
+
+.end {
+    background-color: red;
+}
+
+.visited {
+    background-color: rgb(49, 182, 226);
+}
+
+.solution {
+    background-color: yellow;
+}

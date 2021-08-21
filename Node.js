@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Node = () => {
+const Node = ({nodeData}) => {
     return (
-        <div className="node">
+        <div className={`node ${nodeData.type}`}>
         </div>
     )
 }
