@@ -1,3 +1,10 @@
 #pathfinder-body {
     margin: 70px 5px 0px 5px;
 }
+
+.node {
+    border: 1px solid black;
+    margin: 0px;
+    height: 25px;
+    width: 25px;
+}
