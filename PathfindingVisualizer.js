@@ -3,6 +3,54 @@ import Node from './Node';
 
 const PathfindingVisualizer = () => {
     const [nodes, setNodes] = useState([]);
+    const [mousePressed, setMousePressed] = useState(false);
+
+    const handleMouseDown = (row, col) => {
+        setMousePressed(true);
+
+        //Ensure that the current node is not the start or finish node
+        if (nodes[col][row].type !== "start" && nodes[col][row].type !== "finish") {
+
+            //Check to see if the current node is blank or a wall
+            if (nodes[col][row].type === "blank") {
+                setNodes((nodes) => {
+                    nodes[col][row] = {...nodes[col][row], type: "wall"}
+                    return [...nodes]
+                })
+            } else {
+                setNodes((nodes)=>{
+                    nodes[col][row] = {...nodes[col][row], type: "blank"}
+                    return [...nodes]
+                })
+            }
+        }
+    }
+
+    const handleMouseOver = (row, col) => {
+        if (mousePressed) {
+
+            //Ensure that the current node is not the start or finish node
+            if (nodes[col][row].type !== "start" && nodes[col][row].type !== "finish") {
+
+                //Check to see if the current node is blank or a wall
+                if (nodes[col][row].type === "blank") {
+                    setNodes((nodes) => {
+                        nodes[col][row] = {...nodes[col][row], type: "wall"}
+                        return [...nodes]
+                    })
+                } else {
+                    setNodes((nodes)=>{
+                        nodes[col][row] = {...nodes[col][row], type: "blank"}
+                        return [...nodes]
+                    })
+                }
+            }
+        }
+    }
+
+    const handleMouseUp = (row, col) => {
+        setMousePressed(false);
+    }
 
     useEffect(()=> {
         //Creates blank graph
@@ -15,6 +63,7 @@ const PathfindingVisualizer = () => {
             setNodes(nodes);
         }
         console.log(nodes);
+        //Define the start & end nodes
         nodes[10][5] = {...nodes[10][5], type: "start"}
         nodes[40][5] = {...nodes[40][5], type: "end"}
         setNodes([...nodes]);
@@ -28,7 +77,7 @@ const PathfindingVisualizer = () => {
                         return <div style={{display: 'inline-block'}} key={nodeRowIdx}>
                             {
                                 nodeRow.map((node, nodeIdx)=>{
-                                    return <Node nodeData={node}key={nodeIdx}></Node>
+                                    return <Node nodeData={node} handleMouseDown={handleMouseDown} handleMouseUp={handleMouseUp} handleMouseOver={handleMouseOver} key={`node-${node.row}-${node.col}`}></Node>
                                 })
                             }
                         </div>
