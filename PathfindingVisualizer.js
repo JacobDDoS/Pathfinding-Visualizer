@@ -72,7 +72,7 @@ const PathfindingVisualizer = () => {
 
             //Ensure that the current node is not the start or finish node
             if (!(nodes[col][row].col === startNode[0] && nodes[col][row].row === startNode[1]) && !(nodes[col][row].col === endNode[0] && nodes[col][row].row === endNode[1])) {
-                console.log(nodes[col][row].col + "compared to " + startNode[0])
+
                 //Check to see if the current node is blank or a wall
                 if (nodes[col][row].type === "blank") {
                     setNodes((nodes) => {
@@ -261,6 +261,8 @@ const PathfindingVisualizer = () => {
                 }
             }
 
+            path[nodesToVisit[0][0]][nodesToVisit[0][1]] = [];
+
             //Remove the first element
             nodesToVisit.shift();
         }
@@ -304,7 +306,6 @@ const PathfindingVisualizer = () => {
             nodes.push(colOfNodes);
             setNodes(nodes);
         }
-        console.log(nodes);
         //Define the start & end nodes
         nodes[10][5] = {...nodes[10][5], type: "start"}
         nodes[40][5] = {...nodes[40][5], type: "end"}
