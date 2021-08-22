@@ -31,7 +31,10 @@ const PathfindingVisualizer = () => {
         for (let curCol=0;curCol<NUMBER_OF_COLUMNS;curCol++) {
             for (let curRow=0;curRow<NUMBER_OF_ROWS;curRow++) {
                 if (nodes[curCol][curRow].type === "start") {
-                    setStartNode([curCol, curRow])
+                    setStartNode((node)=> {
+                        node = [curCol, curRow]
+                        return [...node]
+                    })
                     return [curCol, curRow];
                 }
             }
@@ -211,7 +214,9 @@ const PathfindingVisualizer = () => {
                     visited[nodesToVisit[0][0]][nodesToVisit[0][1]-1] = true;
                     nodesToVisit.push([nodesToVisit[0][0], nodesToVisit[0][1]-1]);
 
-                    path[nodesToVisit[0][0]][nodesToVisit[0][1]-1] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0], nodesToVisit[0][1]-1]]
+                    if (path[nodesToVisit[0][0]][nodesToVisit[0][1]-1].length < 1) {
+                        path[nodesToVisit[0][0]][nodesToVisit[0][1]-1] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0], nodesToVisit[0][1]-1]]
+                    }
                 }
             }
 
@@ -221,7 +226,9 @@ const PathfindingVisualizer = () => {
                     visited[nodesToVisit[0][0]][nodesToVisit[0][1]+1] = true;
                     nodesToVisit.push([nodesToVisit[0][0], nodesToVisit[0][1]+1]);
 
-                    path[nodesToVisit[0][0]][nodesToVisit[0][1]+1] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0], nodesToVisit[0][1]+1]]
+                    if (path[nodesToVisit[0][0]][nodesToVisit[0][1]+1].length < 1) {
+                        path[nodesToVisit[0][0]][nodesToVisit[0][1]+1] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0], nodesToVisit[0][1]+1]]
+                    }
                 }
             }
 
@@ -231,7 +238,9 @@ const PathfindingVisualizer = () => {
                     visited[nodesToVisit[0][0]-1][nodesToVisit[0][1]] = true;
                     nodesToVisit.push([nodesToVisit[0][0]-1, nodesToVisit[0][1]]);
 
-                    path[nodesToVisit[0][0]-1][nodesToVisit[0][1]] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0]-1, nodesToVisit[0][1]]]
+                    if (path[nodesToVisit[0][0]-1][nodesToVisit[0][1]].length < 1) {
+                        path[nodesToVisit[0][0]-1][nodesToVisit[0][1]] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0]-1, nodesToVisit[0][1]]]
+                    }
                 }
             }
 
@@ -240,8 +249,9 @@ const PathfindingVisualizer = () => {
                 if (nodes[nodesToVisit[0][0]+1][nodesToVisit[0][1]].type !== "visited" && !visited[nodesToVisit[0][0]+1][nodesToVisit[0][1]]) {
                     visited[nodesToVisit[0][0]+1][nodesToVisit[0][1]] = true;
                     nodesToVisit.push([nodesToVisit[0][0]+1, nodesToVisit[0][1]]);
-
-                    path[nodesToVisit[0][0]+1][nodesToVisit[0][1]] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0]+1, nodesToVisit[0][1]]]
+                    if (path[nodesToVisit[0][0]+1][nodesToVisit[0][1]].length < 1) {
+                        path[nodesToVisit[0][0]+1][nodesToVisit[0][1]] = [...path[nodesToVisit[0][0]][nodesToVisit[0][1]], [nodesToVisit[0][0]+1, nodesToVisit[0][1]]]
+                    }
                 }
             }
 
@@ -326,9 +336,8 @@ const PathfindingVisualizer = () => {
                         removeNode("visited")
                         removeNode("solution")
                         let startNode = findStartNode();
-                        setTimeout(()=> {
-                            breadthFirstSearchVisualizer(startNode[0], startNode[1]);
-                        }, 50)
+                        setStartAndEndNodes()
+                        breadthFirstSearchVisualizer(startNode[0], startNode[1]);
                     }
                     }}>BFS</button>
                 </div>
