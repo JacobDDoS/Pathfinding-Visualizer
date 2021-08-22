@@ -7,7 +7,7 @@ const PathfindingVisualizer = () => {
     const [NUMBER_OF_COLUMNS, setNUMBER_OF_COLUMNS] = useState(Math.round(window.innerWidth/28));
     const [ANIMATION_SPEED, setANIMATION_SPEED] = useState(10)
     const [startNode, setStartNode] = useState([10, 5])
-    const [endNode, setEndNode] = useState([40, 5])
+    const [endNode, setEndNode] = useState([10, 10])
     const [isRunning, setIsRunning] = useState(false);
     const [mousePressed, setMousePressed] = useState(false);
     const [whichNodeToMove, setWhichNodeToMove] = useState("")
@@ -307,8 +307,8 @@ const PathfindingVisualizer = () => {
             setNodes(nodes);
         }
         //Define the start & end nodes
-        nodes[10][5] = {...nodes[10][5], type: "start"}
-        nodes[40][5] = {...nodes[40][5], type: "end"}
+        nodes[startNode[0]][startNode[1]] = {...nodes[startNode[0]][startNode[1]], type: "start"}
+        nodes[endNode[0]][endNode[1]] = {...nodes[endNode[0]][endNode[1]], type: "end"}
         setNodes([...nodes]);
 
         //Hacky Cleanup
@@ -339,7 +339,7 @@ const PathfindingVisualizer = () => {
             <div className="pathfinder-section">
                 <div className="pathfinder-section-item">
                     <button className="btn" onClick={()=>{
-                        if (!isRunning) {
+                        if (!isRunning && !whichNodeToMove && !mousePressed) {
                         removeNode("visited")
                         removeNode("solution")
                         setStartAndEndNodes()
@@ -352,12 +352,12 @@ const PathfindingVisualizer = () => {
                 </div>
                 <div className="pathfinder-section-item">
                     <button className="btn" onClick={()=>{
-                        if (!isRunning) {
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
                         removeNode("wall")
                         }
                     }}>Clear Walls</button>
                     <button className="btn" onClick={()=>{
-                        if (!isRunning) {
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
                         removeNode("wall")
                         removeNode("visited")
                         removeNode("solution")
@@ -365,7 +365,7 @@ const PathfindingVisualizer = () => {
                         }
                     }}>Clear All</button>
                     <button className="btn" onClick={()=>{
-                        if (!isRunning) {
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
                         removeNode("visited")
                         removeNode("solution")
                         setStartAndEndNodes()
