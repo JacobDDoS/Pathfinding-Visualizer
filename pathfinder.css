@@ -19,10 +19,20 @@
 
 .start {
     background-color: rgb(11, 218, 11);
+    cursor:grab;
+}
+
+.start:active {
+    cursor: grabbing;
 }
 
 .end {
     background-color: red;
+    cursor: grab;
+}
+
+.end:active {
+    cursor: grabbing
 }
 
 .visited {
