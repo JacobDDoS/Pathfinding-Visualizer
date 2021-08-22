@@ -31,9 +31,9 @@ const PathfindingVisualizer = () => {
         for (let curCol=0;curCol<NUMBER_OF_COLUMNS;curCol++) {
             for (let curRow=0;curRow<NUMBER_OF_ROWS;curRow++) {
                 if (nodes[curCol][curRow].type === "start") {
-                    setStartNode((node)=> {
-                        node = [curCol, curRow]
-                        return [...node]
+                    setStartNode((startNode)=> {
+                        startNode = [curCol, curRow]
+                        return [...startNode]
                     })
                     return [curCol, curRow];
                 }
@@ -67,12 +67,12 @@ const PathfindingVisualizer = () => {
         if (!isRunning) {
             removeNode("visited")
             removeNode("solution")
-            setStartAndEndNodes();
             setMousePressed(true);
+            setStartAndEndNodes();
 
             //Ensure that the current node is not the start or finish node
-            if (nodes[col][row].type !== "start" && nodes[col][row].type !== "end") {
-
+            if (!(nodes[col][row].col === startNode[0] && nodes[col][row].row === startNode[1]) && !(nodes[col][row].col === endNode[0] && nodes[col][row].row === endNode[1])) {
+                console.log(nodes[col][row].col + "compared to " + startNode[0])
                 //Check to see if the current node is blank or a wall
                 if (nodes[col][row].type === "blank") {
                     setNodes((nodes) => {
@@ -87,9 +87,9 @@ const PathfindingVisualizer = () => {
                 }
 
                 //Check to see if user is going to drag start or end node
-            } else if (nodes[col][row].type === "start") {
+            } else if (nodes[col][row].col === startNode[0] && nodes[col][row].row === startNode[1]) {
                 setWhichNodeToMove("start");
-            } else if (nodes[col][row].type === "end") {
+            } else if (nodes[col][row].col === endNode[0] && nodes[col][row].row === endNode[1]) {
                 setWhichNodeToMove("end");
             }
         }
@@ -104,6 +104,8 @@ const PathfindingVisualizer = () => {
             if (whichNodeToMove) {
                 if (whichNodeToMove === "start") {
                     if (nodes[col][row].type !== "end") {
+
+                        //Set the start node equal to the new position
                         setStartNode([col, row])
                         removeNode("start");
                         setNodes((nodes)=> {
@@ -113,6 +115,8 @@ const PathfindingVisualizer = () => {
                     }   
                 } else if (whichNodeToMove === "end") {
                     if (nodes[col][row].type !== "start") {
+
+                        //Set the end node equal to the new position
                         setEndNode([col, row])
                         removeNode("end");
                         setNodes((nodes)=> {
@@ -123,8 +127,10 @@ const PathfindingVisualizer = () => {
                 } else {
                     throw new Error("Unrecognized node");
                 }
+                //If we are not moving end or start nodes
             } else if (!isRunning) {
                 setStartAndEndNodes()
+
                 //Ensure that the current node is not the start or finish node
                 if (nodes[col][row].type !== "start" && nodes[col][row].type !== "end") {
 
