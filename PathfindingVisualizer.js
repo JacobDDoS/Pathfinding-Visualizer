@@ -335,9 +335,11 @@ const PathfindingVisualizer = () => {
                         if (!isRunning) {
                         removeNode("visited")
                         removeNode("solution")
-                        let startNode = findStartNode();
                         setStartAndEndNodes()
-                        breadthFirstSearchVisualizer(startNode[0], startNode[1]);
+                        // let returnedStartNode = findStartNode();
+                        setTimeout(()=>{
+                            breadthFirstSearchVisualizer(startNode[0], startNode[1]);
+                        }, 500)
                     }
                     }}>BFS</button>
                 </div>
