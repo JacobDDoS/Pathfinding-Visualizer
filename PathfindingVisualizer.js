@@ -384,7 +384,6 @@ const PathfindingVisualizer = () => {
         }
 
         //If end and start node take up the same space, move the start node away
-        console.log("startNode: " + startNode + " endNode: " + endNode)
         if (startNode[0] === endNode[0] && startNode[1] === endNode[1]) {
             if (startNode[0] > 0) {
                 startNode[0]--;
@@ -406,7 +405,7 @@ const PathfindingVisualizer = () => {
 
     }, [NUMBER_OF_ROWS, NUMBER_OF_COLUMNS])
 
-    
+
     useEffect(()=> {
         //Creates blank graph
         for (let col=0;col<NUMBER_OF_COLUMNS;col++) {
