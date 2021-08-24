@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import {RangeStepInput} from 'react-range-step-input';
 import Node from './Node';
 
 const PathfindingVisualizer = () => {
@@ -296,6 +297,116 @@ const PathfindingVisualizer = () => {
         return true;
     }
 
+
+    useEffect(()=> {
+        //To ensure that it isn't the first iteration meaning that numOfRows or numOfColumns have changed
+        if (nodes.length > 0) {
+        
+        //Until nodes has enough columns, add more.
+        while (nodes.length < NUMBER_OF_COLUMNS) {
+            let colOfNodes = [];
+            for (let col=nodes.length;col<NUMBER_OF_COLUMNS;col++) {
+                for (let row=0;row<NUMBER_OF_ROWS;row++) {
+                    colOfNodes.push({row: row, col: col, type: "blank"})
+                }
+            }
+
+            setNodes((nodes) => {
+                nodes.push(colOfNodes)
+                return [...nodes];
+            })
+            //Throughout this useEffect, you'll see that I manually update even though I set the state
+            //This is because that useState is a little too slow that that led to some major bugs
+            //So I also manually update the state alongside updating it asynchronous
+            nodes.push(colOfNodes)
+        }
+
+        //Until each column has enough rows, add another node to the column
+        while (nodes[0].length < NUMBER_OF_ROWS) {
+            for (let i=0;i<NUMBER_OF_COLUMNS;i++) {
+                nodes[i].push({row: nodes[i].length, col: i, type: "blank"})
+            }
+            setNodes((nodes) => {
+                return [...nodes]
+            })
+        }
+
+        //Use tempNodes to map out the nodes and while doing that, set them to blank if they are 
+        //"solution" or "visited" nodes
+        let tempNodes = [];
+        for (let col=0;col<NUMBER_OF_COLUMNS;col++) {
+            let colOfNodes = [];
+            for (let row=0;row<NUMBER_OF_ROWS;row++) {
+                if (nodes[col][row].type === "solution" || nodes[col][row].type === "visited") {
+                    nodes[col][row].type = "blank";
+                }
+                colOfNodes.push(nodes[col][row]);
+            }
+            tempNodes.push(colOfNodes);
+        }
+
+        
+
+        //Ensure that the start node's column exists
+        if (startNode[0] >= NUMBER_OF_COLUMNS) {
+            setStartNode((startNode) => {
+                startNode[0] = NUMBER_OF_COLUMNS-1;
+                return [...startNode];
+            })
+            startNode[0] = NUMBER_OF_COLUMNS-1;
+        }
+
+        //Ensure that the start node's row exists
+        if (startNode[1] >= NUMBER_OF_ROWS) {
+            setStartNode((startNode) => {
+                startNode[1] = NUMBER_OF_ROWS-1;
+                return [...startNode];
+            })
+            startNode[1] = NUMBER_OF_ROWS-1;
+        }
+
+        //Ensure that the end node's column exists
+        if (endNode[0] >= NUMBER_OF_COLUMNS) {
+            setEndNode((endNode) => {
+                endNode[0] = NUMBER_OF_COLUMNS-1;
+                return [...endNode];
+            })
+            endNode[0] = NUMBER_OF_COLUMNS-1;
+        }
+
+        //Ensure that the end node's row exists
+        if (endNode[1] >= NUMBER_OF_ROWS) {
+            setEndNode((endNode) => {
+                endNode[1] = NUMBER_OF_ROWS-1;
+                return [...endNode];
+            })
+            endNode[1] = NUMBER_OF_ROWS-1;
+        }
+
+        //If end and start node take up the same space, move the start node away
+        console.log("startNode: " + startNode + " endNode: " + endNode)
+        if (startNode[0] === endNode[0] && startNode[1] === endNode[1]) {
+            if (startNode[0] > 0) {
+                startNode[0]--;
+            }
+            else {
+                startNode[1]--;
+            }
+            setStartNode(startNode)
+            
+        }
+
+        //Define the start & end nodes
+        tempNodes[startNode[0]][startNode[1]] = {...tempNodes[startNode[0]][startNode[1]], type: "start"}
+        tempNodes[endNode[0]][endNode[1]] = {...tempNodes[endNode[0]][endNode[1]], type: "end"}
+
+        setNodes([...tempNodes]);
+
+    }
+
+    }, [NUMBER_OF_ROWS, NUMBER_OF_COLUMNS])
+
+    
     useEffect(()=> {
         //Creates blank graph
         for (let col=0;col<NUMBER_OF_COLUMNS;col++) {
@@ -322,6 +433,68 @@ const PathfindingVisualizer = () => {
 
     return (
         <div id="pathfinder-body">
+            <div className="pathfinder-section">
+                <div className="pathfinder-section-item">
+                    <button className="btn pathfinder-button" style={{marginTop: "40px"}}onClick={()=>{
+                        if (!isRunning && !whichNodeToMove && !mousePressed) {
+                        removeNode("visited")
+                        removeNode("solution")
+                        setStartAndEndNodes()
+                        // let returnedStartNode = findStartNode();
+                        setTimeout(()=>{
+                            breadthFirstSearchVisualizer(startNode[0], startNode[1]);
+                        }, 500)
+                    }
+                    }}>Breadth First Search</button>
+                </div>
+                <div className="pathfinder-section-item">
+                    <button className="btn pathfinder-button" onClick={()=>{
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                        removeNode("wall")
+                        }
+                    }}>Clear Walls</button>
+                    <button className="btn pathfinder-button" onClick={()=>{
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                        removeNode("wall")
+                        removeNode("visited")
+                        removeNode("solution")
+                        setStartAndEndNodes()
+                        }
+                    }}>Clear All</button>
+                    <button className="btn pathfinder-button" onClick={()=>{
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                        removeNode("visited")
+                        removeNode("solution")
+                        setStartAndEndNodes()
+                        }
+                    }}>Clear All except Walls</button>
+                </div>
+                <div className="pathfinder-section-item">
+                    <p className="slider-input-text">Number of Columns</p>
+                    <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_COLUMNS} Columns</p>
+                    <RangeStepInput
+                        min={5} max={Math.round(window.innerWidth/28)}
+                        value={NUMBER_OF_COLUMNS} step={1}
+                        onChange={(e) => {
+                            if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                            setNUMBER_OF_COLUMNS(e.target.value)
+                            }
+                        }}
+                    />
+
+                    <p className="slider-input-text">Number of Rows</p>
+                    <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_ROWS} Rows</p>
+                    <RangeStepInput
+                        min={5} max={25}
+                        value={NUMBER_OF_ROWS} step={1}
+                        onChange={(e) => {
+                            if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                            setNUMBER_OF_ROWS(e.target.value)
+                            }
+                        }}
+                    />
+                </div>
+            </div>
             <div id="pathfinder-graph">
                 {
                     nodes.map((nodeRow, nodeRowIdx)=> {
@@ -334,44 +507,6 @@ const PathfindingVisualizer = () => {
                         </div>
                     })
                 }
-            </div>
-
-            <div className="pathfinder-section">
-                <div className="pathfinder-section-item">
-                    <button className="btn" onClick={()=>{
-                        if (!isRunning && !whichNodeToMove && !mousePressed) {
-                        removeNode("visited")
-                        removeNode("solution")
-                        setStartAndEndNodes()
-                        // let returnedStartNode = findStartNode();
-                        setTimeout(()=>{
-                            breadthFirstSearchVisualizer(startNode[0], startNode[1]);
-                        }, 500)
-                    }
-                    }}>BFS</button>
-                </div>
-                <div className="pathfinder-section-item">
-                    <button className="btn" onClick={()=>{
-                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                        removeNode("wall")
-                        }
-                    }}>Clear Walls</button>
-                    <button className="btn" onClick={()=>{
-                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                        removeNode("wall")
-                        removeNode("visited")
-                        removeNode("solution")
-                        setStartAndEndNodes()
-                        }
-                    }}>Clear All</button>
-                    <button className="btn" onClick={()=>{
-                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                        removeNode("visited")
-                        removeNode("solution")
-                        setStartAndEndNodes()
-                        }
-                    }}>Clear All except Walls</button>
-                </div>
             </div>
         </div>
     )
