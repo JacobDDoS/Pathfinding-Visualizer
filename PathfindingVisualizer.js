@@ -453,7 +453,6 @@ const PathfindingVisualizer = () => {
                         removeNode("visited")
                         removeNode("solution")
                         setStartAndEndNodes()
-                        // let returnedStartNode = findStartNode();
                         setTimeout(()=>{
                             breadthFirstSearchVisualizer(startNode[0], startNode[1]);
                         }, 500)
