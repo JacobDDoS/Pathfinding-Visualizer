@@ -283,6 +283,7 @@ const PathfindingVisualizer = () => {
 
             //Check to see if we have an answer
             if (path[endNode[0]][endNode[1]].length) {
+
                 //Set each element in the path to type: "solution". 
                 for (let i=0;i<path[endNode[0]][endNode[1]].length;i++) {
                     let column = path[endNode[0]][endNode[1]][i][0]
@@ -292,20 +293,20 @@ const PathfindingVisualizer = () => {
                             nodes[column][row] = {...nodes[column][row], type: "solution"}
                             return [...nodes]
                         })
-                    }, ANIMATION_SPEED * animationNumber + ANIMATION_SPEED)
+                    }, ANIMATION_SPEED * animationNumber)
                     animationNumber++;
                 }
 
                 //Set isRunning to false at the end
                 setTimeout(()=>{
                     setIsRunning(false)
-                }, ANIMATION_SPEED*animationNumber+ANIMATION_SPEED)
+                }, ANIMATION_SPEED*animationNumber)
             } else {
 
                 //Set isRunning to false if there is no path
                 setTimeout(()=>{
                     setIsRunning(false);
-                }, ANIMATION_SPEED*animationNumber+ANIMATION_SPEED)
+                }, ANIMATION_SPEED*animationNumber)
             }
         return true;
     }
@@ -488,29 +489,44 @@ const PathfindingVisualizer = () => {
                     }}>Fill All</button>
                 </div>
                 <div className="pathfinder-section-item">
-                    <p className="slider-input-text">Number of Columns</p>
-                    <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_COLUMNS} Columns</p>
-                    <RangeStepInput
-                        min={5} max={Math.round(window.innerWidth/28)}
-                        value={NUMBER_OF_COLUMNS} step={1}
-                        onChange={(e) => {
-                            if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                            setNUMBER_OF_COLUMNS(e.target.value)
-                            }
-                        }}
-                    />
+                    <div style={{width: "150px", height: "125px", display: "inline-block",  float: "left"}}>
+                        <p className="slider-input-text">Number of Columns</p>
+                        <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_COLUMNS} Columns</p>
+                        <RangeStepInput
+                            min={5} max={Math.round(window.innerWidth/28)}
+                            value={NUMBER_OF_COLUMNS} step={1}
+                            onChange={(e) => {
+                                if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                                setNUMBER_OF_COLUMNS(e.target.value)
+                                }
+                            }}
+                        />
 
-                    <p className="slider-input-text">Number of Rows</p>
-                    <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_ROWS} Rows</p>
-                    <RangeStepInput
-                        min={5} max={25}
-                        value={NUMBER_OF_ROWS} step={1}
-                        onChange={(e) => {
-                            if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                            setNUMBER_OF_ROWS(e.target.value)
-                            }
-                        }}
-                    />
+                        <p className="slider-input-text">Number of Rows</p>
+                        <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {NUMBER_OF_ROWS} Rows</p>
+                        <RangeStepInput
+                            min={5} max={25}
+                            value={NUMBER_OF_ROWS} step={1}
+                            onChange={(e) => {
+                                if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                                setNUMBER_OF_ROWS(e.target.value)
+                                }
+                            }}
+                        />
+                    </div>
+                    <div style={{display: "inline-block"}}>
+                        <p className="slider-input-text">Animation Speed</p>
+                        <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {ANIMATION_SPEED} ms</p>
+                        <RangeStepInput
+                            min={10} max={500}
+                            value={ANIMATION_SPEED} step={1}
+                            onChange={(e) => {
+                                if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                                setANIMATION_SPEED(e.target.value)
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
             <div id="pathfinder-graph">
