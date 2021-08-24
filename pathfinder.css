@@ -2,6 +2,21 @@
     margin: 70px 5px 0px 5px;
 }
 
+.pathfinder-section {
+    height: 150px;
+}
+
+.pathfinder-section-item {
+    width: 30%;
+    height: 135px; 
+    display: inline-block;
+    margin: 5px;
+}
+
+.pathfinder-button {
+    margin-top: 3px;
+}
+
 .node {
     border: 1px solid black;
     margin: 0px;

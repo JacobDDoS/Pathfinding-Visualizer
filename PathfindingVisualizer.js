@@ -61,7 +61,20 @@ const PathfindingVisualizer = () => {
             nodes[endNode[0]][endNode[1]].type = "end";
             return [...nodes];
         })
-        
+    }
+
+    //Function that will set all nodes that are "blank", "solution", or "visited" to "wall"
+    const setAllBlankNodesToWall = () => {
+        for (let col=0;col<NUMBER_OF_COLUMNS;col++) {
+            for (let row=0;row<NUMBER_OF_ROWS;row++) {
+                if (nodes[col][row].type === "blank" || nodes[col][row].type === "solution" || nodes[col][row].type === "visited") {
+                    nodes[col][row].type = "wall";
+                }
+            }
+        }
+        setNodes((nodes) => {
+            return [...nodes]
+        })
     }
 
     const handleMouseDown = (row, col) => {
@@ -467,6 +480,12 @@ const PathfindingVisualizer = () => {
                         setStartAndEndNodes()
                         }
                     }}>Clear All except Walls</button>
+                    <button className="btn pathfinder-button" onClick={()=>{
+                        if (!isRunning && !whichNodeToMove&& !mousePressed) {
+                        setAllBlankNodesToWall()
+                        setStartAndEndNodes();
+                        }
+                    }}>Fill All</button>
                 </div>
                 <div className="pathfinder-section-item">
                     <p className="slider-input-text">Number of Columns</p>
