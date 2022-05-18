@@ -18,13 +18,22 @@ const PathfindingVisualizer = () => {
         for (let col=0;col<NUMBER_OF_COLUMNS;col++) {
             for (let row=0;row<NUMBER_OF_ROWS;row++) {
                 if (nodes[col][row].type === nameOfNode) {
-                    setNodes((nodes)=> {
-                        nodes[col][row].type = "blank";
-                        return [...nodes];
-                    })
+                    nodes[col][row].type = "blank";
+                    // setNodes((nodes)=> {
+                    //     nodes[col][row].type = "blank";
+                    //     return [...nodes];
+                    // })
+                }
+
+                //To turn visited nodes into blank (because their type is still technically blank)
+                if (nodes[col][row].type === "blank") {
+                    document.getElementById(`node-${row}-${col}`).className = "node blank"
                 }
             }
         }
+        setNodes(nodes=>{
+            return [...nodes];
+        });
     }
 
     //Helper function to find & set the position of the start node
@@ -220,10 +229,14 @@ const PathfindingVisualizer = () => {
                     const column = JSON.parse(JSON.stringify(nodesToVisit[0][0]))
                     const row = JSON.parse(JSON.stringify(nodesToVisit[0][1]))
                     setTimeout(() => {
-                        setNodes((nodes) => {
-                            nodes[column][row] = {...nodes[column][row], type: "visited"}
-                            return [...nodes]
-                        })
+                        // New way
+                        document.getElementById(`node-${row}-${column}`).className = "node visited"
+
+                        // Old way
+                        // setNodes((nodes) => {
+                        //     nodes[column][row] = {...nodes[column][row], type: "visited"}
+                        //     return [...nodes]
+                        // })
                     }, ANIMATION_SPEED*animationNumber)
                 animationNumber++;
             }
@@ -289,10 +302,14 @@ const PathfindingVisualizer = () => {
                     let column = path[endNode[0]][endNode[1]][i][0]
                     let row = path[endNode[0]][endNode[1]][i][1]
                     setTimeout(()=> {
-                        setNodes((nodes) => {
-                            nodes[column][row] = {...nodes[column][row], type: "solution"}
-                            return [...nodes]
-                        })
+                        //New way
+                        document.getElementById(`node-${row}-${column}`).className = "node solution"
+                        nodes[column][row] = {...nodes[column][row], type: "solution"};
+                        //Old way
+                        // setNodes((nodes) => {
+                        //     nodes[column][row] = {...nodes[column][row], type: "solution"}
+                        //     return [...nodes]
+                        // })
                     }, ANIMATION_SPEED * animationNumber)
                     animationNumber++;
                 }
@@ -331,14 +348,14 @@ const PathfindingVisualizer = () => {
             })
             //Throughout this useEffect, you'll see that I manually update even though I set the state
             //This is because that useState is a little too slow that that led to some major bugs
-            //So I also manually update the state alongside updating it asynchronous
+            //So I also manually update the state alongside updating it asynchronously
             nodes.push(colOfNodes)
         }
 
         //Until each column has enough rows, add another node to the column
         while (nodes[0].length < NUMBER_OF_ROWS) {
             for (let i=0;i<NUMBER_OF_COLUMNS;i++) {
-                nodes[i].push({row: nodes[i].length, col: i, type: "blank"})
+                nodes[i].push({row: nodes[i].length, col: i, type: "blank"})   
             }
             setNodes((nodes) => {
                 return [...nodes]
@@ -497,6 +514,7 @@ const PathfindingVisualizer = () => {
                             onChange={(e) => {
                                 if (!isRunning && !whichNodeToMove&& !mousePressed) {
                                 setNUMBER_OF_COLUMNS(e.target.value)
+                                removeNode("visited");
                                 }
                             }}
                         />
@@ -508,7 +526,8 @@ const PathfindingVisualizer = () => {
                             value={NUMBER_OF_ROWS} step={1}
                             onChange={(e) => {
                                 if (!isRunning && !whichNodeToMove&& !mousePressed) {
-                                setNUMBER_OF_ROWS(e.target.value)
+                                setNUMBER_OF_ROWS(e.target.value);
+                                removeNode("visited");
                                 }
                             }}
                         />
@@ -517,7 +536,7 @@ const PathfindingVisualizer = () => {
                         <p className="slider-input-text">Animation Speed</p>
                         <p className="slider-input-text" style={{marginBottom:"5px"}}>Current: {ANIMATION_SPEED} ms</p>
                         <RangeStepInput
-                            min={10} max={500}
+                            min={1} max={500}
                             value={ANIMATION_SPEED} step={1}
                             onChange={(e) => {
                                 if (!isRunning && !whichNodeToMove&& !mousePressed) {
